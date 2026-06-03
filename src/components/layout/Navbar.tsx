@@ -72,7 +72,7 @@ export default function Navbar() {
   const initials = user ? getInitials(user.firstName, user.lastName, user.displayName) : 'U'
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 glass border-b border-white/5">
+    <header className="fixed top-0 inset-x-0 z-50 glass border-b border-gray-200 dark:border-white/5 shadow-sm dark:shadow-none">
       <nav
         className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-2"
         aria-label="Main navigation"
@@ -83,7 +83,7 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center">
               <Layers className="w-4 h-4 text-white" aria-hidden="true" />
             </div>
-            <span className="text-slate-900 dark:text-white font-bold hidden sm:block">AX Jobs</span>
+            <span className="gradient-text font-bold hidden sm:block tracking-tight">AX Jobs</span>
           </Link>
           <button
             type="button"

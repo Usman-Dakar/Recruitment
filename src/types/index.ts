@@ -26,6 +26,8 @@ export interface Job {
   datePosted: string
   description: string
   location: string
+  company?: string
+  salary?: string
 }
 
 export interface SearchParams {

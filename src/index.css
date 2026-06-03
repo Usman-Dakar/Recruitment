@@ -148,6 +148,27 @@ html.light .glass {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Press scale */
+.press:active { transform: scale(0.97); }
+@media (prefers-reduced-motion: reduce) { .press:active { transform: none; } }
+
+/* Lift on hover */
+.lift { transition: transform 200ms ease, box-shadow 200ms ease; }
+.lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
+@media (prefers-reduced-motion: reduce) { .lift:hover { transform: none; } }
+
+/* Pulse dot (slower than Tailwind's animate-pulse) */
+@keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+.animate-pulse-dot { animation: pulseDot 1.6s ease-in-out infinite; }
+
+/* Employers marquee */
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.marquee-track { animation: marquee 32s linear infinite; }
+.fade-edges {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+}
+
 /* ── Light mode body overrides ── */
 html.light {
   color-scheme: light;
