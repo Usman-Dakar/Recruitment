@@ -1,0 +1,27 @@
+import type { DropdownOption } from '@/types'
+
+export const educationLevels: DropdownOption[] = [
+  { value: 199, label: 'KNOWLEDGEABLE' },
+  { value: 200, label: 'COMPETENT' },
+  { value: 201, label: 'O-LEVEL' },
+  { value: 202, label: 'A-LEVEL' },
+  { value: 203, label: 'GRADUATE' },
+  { value: 204, label: 'INTERMEDIATE' },
+  { value: 205, label: 'DIPLOMA' },
+  { value: 206, label: 'DIPLOMA GENERIC' },
+  { value: 207, label: 'FIRST DIPLOMA' },
+  { value: 208, label: 'NATIONAL DIPLOMA' },
+  { value: 209, label: 'HIGHER NATIONAL DIPLOMA' },
+  { value: 210, label: 'HIGHER TECHNICAL DIPLOMA' },
+  { value: 211, label: 'ADVANCED TECHNICIAN DIPLOMA' },
+  { value: 212, label: 'SPECIALIZED DIPLOMA' },
+  { value: 213, label: 'SPECIALIZED CERTIFICATION' },
+  { value: 214, label: 'TECHNICIAN DIPLOMA' },
+  { value: 215, label: 'ORDINARY TECHNICIAN DIPLOMA' },
+  { value: 216, label: 'INTERNATIONAL BACCALAURETE (IB) DIPLOMA' },
+  { value: 217, label: 'FIRST DEGREE / BACHELORATE' },
+  { value: 218, label: 'POST GRADUATE DIPLOMA' },
+  { value: 219, label: 'POST GRADUATE CERTIFICATE' },
+  { value: 220, label: 'MASTERS' },
+  { value: 221, label: 'DOCTORAL' },
+]

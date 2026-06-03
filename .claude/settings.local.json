@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\HP\\\\.claude\\\\projects\\\\D--Recuritment-JobPortal\\\\design-bundle\" -Recurse | Where-Object { !$_.PSIsContainer } | Select-Object -ExpandProperty FullName)"
+    ]
+  }
+}
