@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Reference screenshots (local dev only)
+ss_*.png
+*.png
+
+# Embedded repos
+ux-ui-mastery/
