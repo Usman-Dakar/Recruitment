@@ -46,14 +46,14 @@ export default function Pagination({
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         aria-label="Go to previous page"
-        className={cn(btnBase, 'text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed')}
       >
         <ChevronLeft className="w-4 h-4" aria-hidden="true" />
       </button>
 
       {buildPages().map((page, i) =>
         page === null ? (
-          <span key={`gap-${i}`} className="px-1 text-slate-600 select-none">
+          <span key={`gap-${i}`} className="px-1 text-slate-400 dark:text-slate-600 select-none">
             …
           </span>
         ) : (
@@ -67,7 +67,7 @@ export default function Pagination({
               btnBase,
               page === currentPage
                 ? 'bg-brand-500 text-white'
-                : 'text-slate-400 hover:text-white hover:bg-white/5',
+                : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5',
             )}
           >
             {page}
@@ -80,7 +80,7 @@ export default function Pagination({
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
         aria-label="Go to next page"
-        className={cn(btnBase, 'text-slate-400 hover:text-white hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed')}
+        className={cn(btnBase, 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 disabled:opacity-30 disabled:cursor-not-allowed')}
       >
         <ChevronRight className="w-4 h-4" aria-hidden="true" />
       </button>

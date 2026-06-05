@@ -157,6 +157,121 @@ html.light .glass {
 .lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.10); }
 @media (prefers-reduced-motion: reduce) { .lift:hover { transform: none; } }
 
+/* Cover gradient for LinkedIn-style profile */
+.cover-gradient {
+  background: linear-gradient(135deg, var(--color-brand-600) 0%, #6366f1 50%, #06b6d4 100%);
+}
+.cover-pattern {
+  background-image: radial-gradient(rgba(255,255,255,0.18) 1px, transparent 1px);
+  background-size: 18px 18px;
+}
+
+/* Read-only field display */
+.readfield {
+  display: flex; align-items: center; gap: 0.5rem;
+  min-height: 2.125rem; padding: 0.375rem 0.625rem;
+  background: rgb(249 250 251); border: 1px solid rgb(229 231 235);
+  border-radius: 0.375rem; color: rgb(17 24 39); font-size: 0.875rem;
+  cursor: not-allowed; opacity: 0.8;
+}
+html.dark .readfield {
+  background: rgb(17 24 39); border-color: rgb(31 41 55); color: rgb(243 244 246);
+}
+
+/* Slow spin for save spinner */
+@keyframes spinSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.animate-spin-slow { animation: spinSlow 1.2s linear infinite; }
+
+/* ── Profile page design-system helpers ── */
+.card {
+  background: #ffffff;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.75rem;
+}
+html.dark .card {
+  background: rgb(17 24 39);
+  border-color: rgb(31 41 55);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.625rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.375rem;
+  border: 1px solid transparent;
+  background: rgb(249 250 251);
+  color: rgb(17 24 39);
+  outline: none;
+  transition: border-color 150ms, box-shadow 150ms;
+}
+html.dark .input {
+  background: rgb(17 24 39);
+  color: rgb(243 244 246);
+}
+.input::placeholder { color: rgb(156 163 175); }
+html.dark .input::placeholder { color: rgb(75 85 99); }
+.input:hover { border-color: rgb(209 213 219); }
+html.dark .input:hover { border-color: rgb(55 65 81); }
+.input:focus {
+  border-color: rgb(37 99 235);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+.input.is-bordered { border-color: rgb(229 231 235); }
+html.dark .input.is-bordered { border-color: rgb(31 41 55); }
+
+.label {
+  display: block;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgb(107 114 128);
+  margin-bottom: 0.25rem;
+}
+html.dark .label { color: rgb(156 163 175); }
+
+/* Scale-in for chips / popovers */
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1); }
+}
+.animate-scale-in { animation: scaleIn 0.18s ease-out both; }
+
+/* Slide-down for popovers / drawers */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-slide-down { animation: slideDown 0.2s ease-out both; }
+
+/* ── Job Search 3-panel layout ── */
+.job-list-scroll { overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgb(209 213 219) transparent; }
+.job-list-scroll::-webkit-scrollbar { width: 4px; }
+.job-list-scroll::-webkit-scrollbar-track { background: transparent; }
+.job-list-scroll::-webkit-scrollbar-thumb { background: rgb(209 213 219); border-radius: 4px; }
+html.dark .job-list-scroll::-webkit-scrollbar-thumb { background: rgb(55 65 81); }
+
+.job-card-selected { background: oklch(0.97 0.015 280); }
+html.dark .job-card-selected { background: oklch(0.16 0.025 280); }
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(10px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.animate-slide-in-right { animation: slideInRight 0.18s ease-out both; }
+
+.clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.clamp-3 { display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* Typing caret for AI streaming */
+.caret::after {
+  content: '|';
+  animation: blink 1s step-start infinite;
+}
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
 /* Pulse dot (slower than Tailwind's animate-pulse) */
 @keyframes pulseDot { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 .animate-pulse-dot { animation: pulseDot 1.6s ease-in-out infinite; }

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   Search, MapPin, ChevronDown, Bookmark, TrendingUp,
   Building2, LayoutGrid, Stethoscope, Code2, HardHat,
-  Monitor, Home, Zap, ArrowRight, Sparkles, Layers,
+  Monitor, Home, Zap, ArrowRight, Layers,
   Users, Clock, Briefcase, Check, Phone, Mail, X,
   Sun, Cpu, Hammer, UtensilsCrossed,
 } from 'lucide-react'
@@ -135,25 +135,75 @@ function HeroSearch({ onSubmit }: { onSubmit: (v: { kw: string; loc: string; cat
   )
 }
 
-/* ── Hero preview cards ── */
+/* ── Hero preview cards — carousel (all cards move simultaneously) ── */
+type CardItem = { uid: number; jobIdx: number; slot: number }
+
+// slot -1 = exiting above · 0-2 = visible stack · 3 = entering below
+// All cards anchor at top-right; position is pure transform (GPU-composited).
+const SLOT_MAP: Record<number, { x: number; y: number; rotate: number; scale: number; z: number; opacity: number }> = {
+  '-1': { x: 6,   y: -150, rotate: -4,   scale: 1,    z: 13, opacity: 0 },
+   0:   { x: 0,   y: 0,    rotate: -3,   scale: 1,    z: 12, opacity: 1 },
+   1:   { x: -14, y: 26,   rotate: 1.6,  scale: 0.97, z: 11, opacity: 1 },
+   2:   { x: -8,  y: 50,   rotate: -1.2, scale: 0.94, z: 10, opacity: 1 },
+   3:   { x: -8,  y: 104,  rotate: -1.2, scale: 0.94, z: 9,  opacity: 0 },
+}
+
+const CARD_EASE = 'cubic-bezier(0.65, 0, 0.35, 1)' // easeInOutCubic — smooth both ends
+
 function HeroPreviewCards() {
-  const cards = mockJobs.slice(0, 3)
-  const rotations = [-3, 1.5, -1.2]
-  const tops      = [0, 28, 52]
-  const rights    = [0, 16, 6]
+  const total      = mockJobs.length
+  const nextUid    = useRef(3)
+  const nextJobIdx = useRef(3 % total)
+
+  const [cards, setCards] = useState<CardItem[]>([
+    { uid: 0, jobIdx: 0, slot: 0 },
+    { uid: 1, jobIdx: 1, slot: 1 },
+    { uid: 2, jobIdx: 2, slot: 2 },
+  ])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const addUid    = nextUid.current++
+      const addJobIdx = nextJobIdx.current
+      nextJobIdx.current = (nextJobIdx.current + 1) % total
+
+      // Step 1 — all cards shift simultaneously: front→exit, rest move up, new card mounts below
+      setCards((prev) => [
+        { ...prev[0], slot: -1 },                                   // front → exits above
+        ...prev.slice(1).map((c) => ({ ...c, slot: c.slot - 1 })), // shift each card one slot up
+        { uid: addUid, jobIdx: addJobIdx, slot: 3 },                // new card waits below
+      ])
+
+      // Step 2 — two frames later: slide new card from slot 3 → slot 2 (triggers its transition)
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        setCards((prev) => prev.map((c) => c.slot === 3 ? { ...c, slot: 2 } : c))
+      }))
+
+      // Step 3 — after the motion settles: drop the exited card
+      setTimeout(() => setCards((prev) => prev.filter((c) => c.slot !== -1)), 760)
+    }, 4000)
+
+    return () => clearInterval(interval)
+  }, [total])
+
   return (
     <div className="relative hidden lg:block select-none shrink-0" style={{ width: 290, height: 370 }}>
-      {cards.map((job, i) => {
-        const initials = (job.company ?? '').split(' ').map((w) => w[0]).slice(0, 2).join('')
+      {cards.map((card) => {
+        const s   = SLOT_MAP[card.slot]
+        const job = mockJobs[card.jobIdx]
+        const initials  = (job.company ?? '').split(' ').map((w) => w[0]).slice(0, 2).join('')
+        const typeShort = job.employmentTypeName.includes('Full') ? 'Full Time' : job.employmentTypeName.split(' ')[0]
+
         return (
-          <div key={job.id}
-            className="absolute bg-white dark:bg-surface-800 rounded-2xl p-4 w-[266px] border border-gray-200 dark:border-white/10 shadow-xl"
+          <div key={card.uid}
+            className="absolute top-0 right-0 bg-white dark:bg-surface-800 rounded-2xl p-4 w-[266px] border border-gray-200 dark:border-white/10 shadow-xl"
             style={{
-              top: tops[i], right: rights[i],
-              transform: `rotate(${rotations[i]}deg)`,
-              zIndex: 10 - i,
-              animation: 'fadeInUp 0.7s cubic-bezier(0.16,1,0.3,1) both',
-              animationDelay: `${500 + i * 160}ms`,
+              opacity:   s.opacity,
+              zIndex:    s.z,
+              transform: `translate3d(${s.x}px, ${s.y}px, 0) rotate(${s.rotate}deg) scale(${s.scale})`,
+              transition: `transform 0.7s ${CARD_EASE}, opacity 0.6s ${CARD_EASE}`,
+              willChange: 'transform, opacity',
+              backfaceVisibility: 'hidden',
             }}>
             <div className="flex items-center gap-2.5 mb-3">
               <div className="w-9 h-9 shrink-0 rounded-xl bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 flex items-center justify-center text-brand-600 dark:text-brand-400 font-bold text-xs">
@@ -165,18 +215,12 @@ function HeroPreviewCards() {
               </div>
             </div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-[10px] px-2 py-0.5 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 text-brand-600 dark:text-brand-400 rounded-full font-medium">
-                {job.employmentTypeName.includes('Full') ? 'Full Time' : job.employmentTypeName.split(' ')[0]}
-              </span>
-              <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-white/8 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-slate-400 rounded-full">
-                {job.experienceLevelName}
-              </span>
+              <span className="text-[10px] px-2 py-0.5 bg-brand-50 dark:bg-brand-500/10 border border-brand-100 dark:border-brand-500/20 text-brand-600 dark:text-brand-400 rounded-full font-medium">{typeShort}</span>
+              <span className="text-[10px] px-2 py-0.5 bg-gray-100 dark:bg-white/8 border border-gray-200 dark:border-white/10 text-gray-500 dark:text-slate-400 rounded-full">{job.experienceLevelName}</span>
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                <TrendingUp size={11} className="opacity-70" />{job.salary ?? '€28–40k'}
-              </span>
-            </div>
+            <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+              <TrendingUp size={11} className="opacity-70" />{job.salary ?? '€28–40k'}
+            </span>
             <div className="mt-2 flex items-center gap-1 text-[10px] text-gray-400 dark:text-slate-500">
               <MapPin size={10} /> {job.location}
               <span className="ml-auto text-gray-300 dark:text-slate-600">{job.jobCategoryName}</span>
@@ -184,6 +228,7 @@ function HeroPreviewCards() {
           </div>
         )
       })}
+
       {/* 25 new roles badge */}
       <div className="absolute -bottom-8 left-2 bg-white dark:bg-surface-800 rounded-xl px-3.5 py-2.5 flex items-center gap-2.5 shadow-lg border border-gray-200 dark:border-white/10"
         style={{ animation: 'fadeInUp 0.7s cubic-bezier(0.16,1,0.3,1) both', animationDelay: '860ms' }}>
@@ -772,62 +817,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* ══ FOOTER ══ */}
-      <footer className="bg-gray-50 dark:bg-surface-950 border-t border-gray-200 dark:border-white/8 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <div className="flex items-center gap-2 font-bold text-xl mb-4">
-                <div className="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center shrink-0">
-                  <Sparkles size={16} className="text-white" />
-                </div>
-                <span className="gradient-text tracking-tight">AX Jobs</span>
-              </div>
-              <p className="text-sm text-gray-500 dark:text-slate-400 leading-relaxed max-w-xs">
-                AX Group is one of Malta's leading employers — careers across hospitality, real estate, construction, and technology.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                {[
-                  { to: '/jobs', label: 'Browse Jobs' },
-                  { to: '/information', label: 'Career Information' },
-                  { to: '/about', label: 'About AX Group' },
-                  { to: '/contact', label: 'Contact Us' },
-                  { to: '/profile', label: 'My Profile' },
-                ].map(({ to, label }) => (
-                  <li key={label}>
-                    <Link to={to} className="text-sm text-gray-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 transition-colors">{label}</Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-xs font-semibold text-gray-500 dark:text-slate-400 uppercase tracking-widest mb-4">Contact</h3>
-              <address className="not-italic space-y-3">
-                <div className="flex items-start gap-2.5 text-sm text-gray-500 dark:text-slate-400">
-                  <MapPin size={15} className="mt-0.5 text-brand-500 shrink-0" />
-                  <span>AX Business Centre, Triq Id-Difesa Civili,<br />Mosta MST 1741, Malta</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-slate-400">
-                  <Phone size={15} className="text-brand-500 shrink-0" />
-                  <a href="tel:+35623312345" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">+356 2331 2345</a>
-                </div>
-                <div className="flex items-center gap-2.5 text-sm text-gray-500 dark:text-slate-400">
-                  <Mail size={15} className="text-brand-500 shrink-0" />
-                  <a href="mailto:info@axgroup.mt" className="hover:text-brand-600 dark:hover:text-brand-400 transition-colors">info@axgroup.mt</a>
-                </div>
-              </address>
-            </div>
-          </div>
-          <div className="mt-10 pt-6 border-t border-gray-200 dark:border-white/8 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-xs text-gray-400 dark:text-slate-500">© {new Date().getFullYear()} AX Group. All rights reserved.</p>
-            <p className="text-xs text-gray-300 dark:text-slate-600">axgroup.mt</p>
-          </div>
-        </div>
-      </footer>
 
       <Toast msg={toast} onDone={() => setToast(null)} />
     </div>

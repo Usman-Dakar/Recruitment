@@ -12,9 +12,9 @@ import { industries } from '@/data/industries'
 import { jobCategories } from '@/data/jobCategories'
 
 const selectClass =
-  'w-full px-3 py-2.5 bg-surface-700 border border-white/10 rounded-lg text-sm text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500'
+  'w-full px-3 py-2.5 bg-white dark:bg-surface-700 border border-slate-200 dark:border-white/10 rounded-lg text-sm text-slate-800 dark:text-slate-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500'
 const labelClass =
-  'block text-xs font-medium text-slate-400 uppercase tracking-wider mb-1.5'
+  'block text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5'
 
 interface SearchFormProps {
   onSearch?: () => void
@@ -70,7 +70,7 @@ export default function SearchForm({ onSearch, onReset }: SearchFormProps) {
           onChange={(e) => setParams({ freeText: e.target.value })}
           placeholder="Job title or skill…"
           autoComplete="off"
-          className="w-full px-3 py-2.5 bg-surface-700 border border-white/10 rounded-lg text-sm text-slate-200 placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          className="w-full px-3 py-2.5 bg-white dark:bg-surface-700 border border-slate-200 dark:border-white/10 rounded-lg text-sm text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         />
       </div>
 
@@ -179,7 +179,7 @@ export default function SearchForm({ onSearch, onReset }: SearchFormProps) {
           type="button"
           onClick={handleReset}
           aria-label="Reset all filters"
-          className="px-3.5 py-2.5 text-slate-400 border border-white/10 rounded-lg hover:text-white hover:border-white/20 transition-colors touch-target"
+          className="px-3.5 py-2.5 text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-white/10 rounded-lg hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-white/20 transition-colors touch-target"
         >
           <RotateCcw className="w-4 h-4" aria-hidden="true" />
         </button>

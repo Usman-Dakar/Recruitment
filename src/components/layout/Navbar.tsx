@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import {
   Menu, X, Layers, Briefcase, ChevronDown, LogOut, Settings,
   Home, Zap, CircleUser, Mail, Info, LayoutGrid, Send, Sun, Moon, User,
+  LayoutList,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuthStore } from '@/store/authStore'
@@ -28,6 +29,161 @@ const authNavLinks = [
   { to: '/about',       label: 'About Us',        end: false, icon: LayoutGrid  },
   { to: '/contact',     label: 'Contact Us',      end: false, icon: Send        },
 ]
+
+/* ── Profile nav item with template dropdown ── */
+function ProfileNavItem({ isAuthenticated, onClose }: { isAuthenticated: boolean; onClose?: () => void }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+  const isActive = location.pathname.startsWith('/profile')
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setClose() }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [])
+
+  const setClose = () => setOpen(false)
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className={cn(
+          'flex items-center gap-1.5 rounded-lg font-medium transition-colors whitespace-nowrap',
+          isAuthenticated ? 'px-2.5 py-2 text-xs' : 'px-3 py-2 text-sm',
+          isActive
+            ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
+        )}
+      >
+        <CircleUser className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+        My Profile
+        <ChevronDown className={cn('w-3 h-3 transition-transform', open && 'rotate-180')} aria-hidden="true" />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 w-52 glass rounded-xl border border-white/10 dark:border-white/8 shadow-xl overflow-hidden animate-fade-in-up z-50">
+          <div className="px-3 py-2 border-b border-white/5">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">Profile Template</p>
+          </div>
+          <div className="py-1">
+            <Link
+              to="/profile"
+              onClick={() => { setClose(); onClose?.() }}
+              className={cn(
+                'flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors',
+                location.pathname === '/profile'
+                  ? 'text-brand-400 bg-brand-500/10'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5',
+              )}
+            >
+              <LayoutList className="w-4 h-4 shrink-0 text-slate-400" />
+              <div>
+                <div className="font-medium leading-tight">Classic Editor</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Template 1 — full CV builder</div>
+              </div>
+            </Link>
+            <Link
+              to="/profile/t2"
+              onClick={() => { setClose(); onClose?.() }}
+              className={cn(
+                'flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors',
+                location.pathname === '/profile/t2'
+                  ? 'text-brand-400 bg-brand-500/10'
+                  : 'text-slate-300 hover:text-white hover:bg-white/5',
+              )}
+            >
+              <Layers className="w-4 h-4 shrink-0 text-slate-400" />
+              <div>
+                <div className="font-medium leading-tight">LinkedIn Style</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Template 2 — card view</div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ── Jobs nav item with layout-template dropdown ── */
+function JobsNavItem({ isAuthenticated, label }: { isAuthenticated: boolean; label: string }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  const location = useLocation()
+  const isActive = location.pathname.startsWith('/jobs')
+
+  useEffect(() => {
+    const h = (e: MouseEvent) => { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false) }
+    document.addEventListener('mousedown', h)
+    return () => document.removeEventListener('mousedown', h)
+  }, [])
+
+  const isClassic = location.pathname === '/jobs' || /^\/jobs\/\d/.test(location.pathname)
+  const isSplit   = location.pathname === '/jobs-split'
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        className={cn(
+          'flex items-center gap-1.5 rounded-lg font-medium transition-colors whitespace-nowrap',
+          isAuthenticated ? 'px-2.5 py-2 text-xs' : 'px-3 py-2 text-sm',
+          isActive
+            ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
+        )}
+      >
+        {isAuthenticated && <Briefcase className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />}
+        {label}
+        <ChevronDown className={cn('w-3 h-3 transition-transform', open && 'rotate-180')} aria-hidden="true" />
+      </button>
+
+      {open && (
+        <div className="absolute left-0 top-full mt-1.5 w-56 glass rounded-xl border border-white/10 dark:border-white/8 shadow-xl overflow-hidden animate-fade-in-up z-50">
+          <div className="px-3 py-2 border-b border-white/5">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">Search Layout</p>
+          </div>
+          <div className="py-1">
+            <Link
+              to="/jobs"
+              onClick={() => setOpen(false)}
+              className={cn(
+                'flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors',
+                isClassic ? 'text-brand-400 bg-brand-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5',
+              )}
+            >
+              <LayoutGrid className="w-4 h-4 shrink-0 text-slate-400" />
+              <div>
+                <div className="font-medium leading-tight">Grid View</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Template 1 — cards + pagination</div>
+              </div>
+            </Link>
+            <Link
+              to="/jobs-split"
+              onClick={() => setOpen(false)}
+              className={cn(
+                'flex items-center gap-2.5 px-4 py-2.5 text-sm transition-colors',
+                isSplit ? 'text-brand-400 bg-brand-500/10' : 'text-slate-300 hover:text-white hover:bg-white/5',
+              )}
+            >
+              <LayoutList className="w-4 h-4 shrink-0 text-slate-400" />
+              <div>
+                <div className="font-medium leading-tight">Split View</div>
+                <div className="text-[10px] text-slate-500 mt-0.5">Template 2 — list + detail panel</div>
+              </div>
+            </Link>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 function getInitials(firstName: string, lastName: string, displayName: string) {
   if (firstName && lastName) return `${firstName[0]}${lastName[0]}`.toUpperCase()
@@ -107,22 +263,28 @@ export default function Navbar() {
         >
           {navLinks.map(({ to, label, end, icon: Icon }) => (
             <li key={to}>
-              <NavLink
-                to={to}
-                end={end}
-                className={({ isActive }) =>
-                  cn(
-                    'flex items-center gap-1.5 rounded-lg font-medium transition-colors whitespace-nowrap',
-                    isAuthenticated ? 'px-2.5 py-2 text-xs' : 'px-3 py-2 text-sm',
-                    isActive
-                      ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
-                  )
-                }
-              >
-                {Icon && <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />}
-                {label}
-              </NavLink>
+              {to === '/profile' && isAuthenticated ? (
+                <ProfileNavItem isAuthenticated={isAuthenticated} />
+              ) : to === '/jobs' ? (
+                <JobsNavItem isAuthenticated={isAuthenticated} label={label} />
+              ) : (
+                <NavLink
+                  to={to}
+                  end={end}
+                  className={({ isActive }) =>
+                    cn(
+                      'flex items-center gap-1.5 rounded-lg font-medium transition-colors whitespace-nowrap',
+                      isAuthenticated ? 'px-2.5 py-2 text-xs' : 'px-3 py-2 text-sm',
+                      isActive
+                        ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
+                    )
+                  }
+                >
+                  {Icon && <Icon className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />}
+                  {label}
+                </NavLink>
+              )}
             </li>
           ))}
         </ul>
@@ -240,22 +402,56 @@ export default function Navbar() {
           <ul className="px-4 py-3 space-y-0.5">
             {navLinks.map(({ to, label, end, icon: Icon }) => (
               <li key={to}>
-                <NavLink
-                  to={to}
-                  end={end}
-                  onClick={() => setMobileOpen(false)}
-                  className={({ isActive }) =>
-                    cn(
-                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                      isActive
-                        ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
-                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
-                    )
-                  }
-                >
-                  {Icon && <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />}
-                  {label}
-                </NavLink>
+                {to === '/profile' && isAuthenticated ? (
+                  <>
+                    <div className="flex items-center gap-2.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      <CircleUser className="w-3.5 h-3.5" /> My Profile
+                    </div>
+                    <div className="ml-4 space-y-0.5 border-l border-slate-100 dark:border-white/8 pl-3">
+                      <Link to="/profile"    onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                        <LayoutList className="w-3.5 h-3.5 shrink-0" /> Classic Editor
+                      </Link>
+                      <Link to="/profile/t2" onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                        <Layers className="w-3.5 h-3.5 shrink-0" /> LinkedIn Style
+                      </Link>
+                    </div>
+                  </>
+                ) : to === '/jobs' ? (
+                  <>
+                    <div className="flex items-center gap-2.5 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest text-slate-400 dark:text-slate-500">
+                      <Briefcase className="w-3.5 h-3.5" /> {label}
+                    </div>
+                    <div className="ml-4 space-y-0.5 border-l border-slate-100 dark:border-white/8 pl-3">
+                      <Link to="/jobs" onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                        <LayoutGrid className="w-3.5 h-3.5 shrink-0" /> Grid View
+                      </Link>
+                      <Link to="/jobs-split" onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5 transition-colors">
+                        <LayoutList className="w-3.5 h-3.5 shrink-0" /> Split View
+                      </Link>
+                    </div>
+                  </>
+                ) : (
+                  <NavLink
+                    to={to}
+                    end={end}
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) =>
+                      cn(
+                        'flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                        isActive
+                          ? 'bg-brand-500/15 text-brand-600 dark:text-brand-400'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-white/5',
+                      )
+                    }
+                  >
+                    {Icon && <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />}
+                    {label}
+                  </NavLink>
+                )}
               </li>
             ))}
           </ul>

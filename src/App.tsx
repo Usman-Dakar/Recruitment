@@ -3,6 +3,7 @@ import RootLayout from '@/components/layout/RootLayout'
 import ProtectedRoute from '@/components/layout/ProtectedRoute'
 import HomePage from '@/pages/HomePage'
 import VacancySearchPage from '@/pages/VacancySearchPage'
+import JobSearchPage from '@/pages/JobSearchPage'
 import LoginPage from '@/pages/LoginPage'
 import InformationPage from '@/pages/InformationPage'
 import AboutUsPage from '@/pages/AboutUsPage'
@@ -10,6 +11,7 @@ import ContactUsPage from '@/pages/ContactUsPage'
 import JobDetailPage from '@/pages/JobDetailPage'
 import DashboardPage from '@/pages/DashboardPage'
 import MyProfilePage from '@/pages/MyProfilePage'
+import ProfileLinkedInPage from '@/pages/ProfileLinkedInPage'
 import MyAccountPage from '@/pages/MyAccountPage'
 import InboxPage from '@/pages/InboxPage'
 
@@ -20,6 +22,7 @@ const router = createBrowserRouter([
       { path: '/',                 element: <HomePage /> },
       { path: '/jobs',             element: <VacancySearchPage /> },
       { path: '/jobs/:categoryId', element: <VacancySearchPage /> },
+      { path: '/jobs-split',       element: <JobSearchPage /> },
       { path: '/job/:id',          element: <JobDetailPage /> },
       { path: '/login',            element: <LoginPage /> },
       { path: '/information',      element: <InformationPage /> },
@@ -30,6 +33,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
           { path: '/profile',   element: <MyProfilePage /> },
+          { path: '/profile/t2', element: <ProfileLinkedInPage /> },
           { path: '/account',   element: <MyAccountPage /> },
           { path: '/inbox',     element: <InboxPage /> },
         ],

@@ -20,9 +20,9 @@ export default function SearchResults() {
   if (!results) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-16 h-16 rounded-full bg-surface-700 flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-surface-700 flex items-center justify-center mb-4">
           <svg
-            className="w-8 h-8 text-slate-500"
+            className="w-8 h-8 text-slate-400 dark:text-slate-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -36,8 +36,8 @@ export default function SearchResults() {
             />
           </svg>
         </div>
-        <p className="text-slate-300 font-medium mb-1">Search open positions</p>
-        <p className="text-slate-500 text-sm">Use the filters to find your next opportunity.</p>
+        <p className="text-slate-700 dark:text-slate-300 font-medium mb-1">Search open positions</p>
+        <p className="text-slate-500 dark:text-slate-500 text-sm">Use the filters to find your next opportunity.</p>
       </div>
     )
   }
@@ -45,9 +45,9 @@ export default function SearchResults() {
   if (results.jobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <div className="w-16 h-16 rounded-full bg-surface-700 flex items-center justify-center mb-4">
+        <div className="w-16 h-16 rounded-full bg-slate-100 dark:bg-surface-700 flex items-center justify-center mb-4">
           <svg
-            className="w-8 h-8 text-slate-500"
+            className="w-8 h-8 text-slate-400 dark:text-slate-500"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -61,16 +61,16 @@ export default function SearchResults() {
             />
           </svg>
         </div>
-        <h3 className="text-slate-200 font-medium mb-1">No positions found</h3>
-        <p className="text-slate-500 text-sm">Try adjusting or clearing your filters.</p>
+        <h3 className="text-slate-800 dark:text-slate-200 font-medium mb-1">No positions found</h3>
+        <p className="text-slate-500 dark:text-slate-500 text-sm">Try adjusting or clearing your filters.</p>
       </div>
     )
   }
 
   return (
     <div id="jobHolder">
-      <p className="text-sm text-slate-400 mb-4">
-        <span className="text-slate-200 font-semibold">{results.totalRecords}</span>{' '}
+      <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">
+        <span className="text-slate-900 dark:text-slate-200 font-semibold">{results.totalRecords}</span>{' '}
         position{results.totalRecords !== 1 ? 's' : ''} found
       </p>
 

@@ -36,11 +36,11 @@ export default function VacancySearchPage() {
 
       {/* Page heading */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-100">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">
           {activeCategoryName ? `${activeCategoryName} Jobs` : 'Vacancy Search'}
         </h1>
         {activeCategoryName && (
-          <p className="text-sm text-slate-400 mt-1">
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
             Showing positions in{' '}
             <span className="text-brand-400">{activeCategoryName}</span>
           </p>
@@ -52,7 +52,7 @@ export default function VacancySearchPage() {
         {/* ── Desktop sidebar ── */}
         <aside className="hidden lg:block w-64 xl:w-72 shrink-0">
           <div className="sticky top-20 glass rounded-xl p-5">
-            <p className="text-xs font-semibold text-slate-300 uppercase tracking-widest mb-4">
+            <p className="text-xs font-semibold text-slate-500 dark:text-slate-300 uppercase tracking-widest mb-4">
               Filters
             </p>
             <SearchForm />
